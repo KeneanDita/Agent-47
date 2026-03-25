@@ -7,9 +7,10 @@ load_dotenv()
 def main():
     workflow = Workflow()
     print("Developer Tools Research Agent")
+    print("Type 'exit' or 'quit' to terminate.")
 
     while True:
-        query = input("\n🔍 Developer Tools Query: ").strip()
+        query = input("\nTask/Question: ").strip()
         if query.lower() in {"quit", "exit"}:
             break
 
