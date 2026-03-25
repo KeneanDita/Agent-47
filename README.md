@@ -15,7 +15,7 @@
 
 ## Overview
 
-**Agent-47** is a sophisticated automated research agent designed to help developers find and analyze tools, libraries, and platforms. By leveraging **FireCrawl** for web access and **LangChain/LangGraph** for cognitive processing, it autonomously searches for companies, analyzes their offerings, and provides structured insights into pricing, tech stacks, and integration capabilities.
+**Agent-47** is a free and sophisticated automated research agent designed to help developers find and analyze tools, libraries, and platforms. By leveraging **FireCrawl** for web access and **LangChain/LangGraph** for cognitive processing, it autonomously searches for companies, analyzes their offerings, and provides structured insights into pricing, tech stacks, and integration capabilities.
 
 ## Features
 
@@ -26,7 +26,7 @@
   - Open Source Status
   - Tech Stack & Language Support
   - API Availability & Integrations
-- **AI-Powered Analysis**: Uses OpenAI's GPT models to synthesize findings into actionable recommendations.
+- **AI-Powered Analysis**: Uses Groq-hosted models to synthesize findings into actionable recommendations.
 - **Robust Workflow**: Built on LangGraph for reliable, state-aware agent execution.
 
 ## Tech Stack
@@ -34,7 +34,7 @@
 - **Python 3.13+**
 - **[FireCrawl](https://firecrawl.dev)** - For web searching and scraping.
 - **[LangChain](https://www.langchain.com/)** & **[LangGraph](https://langchain-ai.github.io/langgraph/)** - For agentic workflow and orchestration.
-- **OpenAI GPT-4o-mini** - For intelligent processing and summarization.
+- **Groq Llama 3.3 70B** - For intelligent processing and summarization.
 - **[uv](https://github.com/astral-sh/uv)** - For fast and modern Python package management.
 
 ## Getting Started
@@ -44,7 +44,7 @@
 - Python 3.13 or higher.
 - **[uv](https://docs.astral.sh/uv/)** installed on your system.
 - API Keys for:
-  - **OpenAI** (`OPENAI_API_KEY`)
+  - **Groq** (`GROQ_API_KEY`)
   - **FireCrawl** (`FIRECRAWL_API_KEY`)
 
 ### Installation
@@ -67,7 +67,7 @@
     Create a `.env` file in the root directory and add your API keys:
 
     ```ini
-    OPENAI_API_KEY=your_openai_api_key_here
+    GROQ_API_KEY=your_groq_api_key_here
     FIRECRAWL_API_KEY=your_firecrawl_api_key_here
     ```
 

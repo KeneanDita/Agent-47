@@ -1,6 +1,6 @@
 from typing import Dict, Any
 from langgraph.graph import StateGraph, END
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, SystemMessage
 from .models import ResearchState, CompanyInfo, CompanyAnalysis
 from .firecrawl import FirecrawlService
@@ -10,7 +10,7 @@ from .prompts import DeveloperToolsPrompts
 class Workflow:
     def __init__(self):
         self.firecrawl = FirecrawlService()
-        self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.1)
+        self.llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.1)
         self.prompts = DeveloperToolsPrompts()
         self.workflow = self._build_workflow()
 
@@ -40,7 +40,9 @@ class Workflow:
 
         messages = [
             SystemMessage(content=self.prompts.TOOL_EXTRACTION_SYSTEM),
-            HumanMessage(content=self.prompts.tool_extraction_user(state.query, all_content))
+            HumanMessage(
+                content=self.prompts.tool_extraction_user(state.query, all_content)
+            ),
         ]
 
         try:
@@ -56,12 +58,16 @@ class Workflow:
             print(e)
             return {"extracted_tools": []}
 
-    def _analyze_company_content(self, company_name: str, content: str) -> CompanyAnalysis:
+    def _analyze_company_content(
+        self, company_name: str, content: str
+    ) -> CompanyAnalysis:
         structured_llm = self.llm.with_structured_output(CompanyAnalysis)
 
         messages = [
             SystemMessage(content=self.prompts.TOOL_ANALYSIS_SYSTEM),
-            HumanMessage(content=self.prompts.tool_analysis_user(company_name, content))
+            HumanMessage(
+                content=self.prompts.tool_analysis_user(company_name, content)
+            ),
         ]
 
         try:
@@ -78,7 +84,6 @@ class Workflow:
                 language_support=[],
                 integration_capabilities=[],
             )
-
 
     def _research_step(self, state: ResearchState) -> Dict[str, Any]:
         extracted_tools = getattr(state, "extracted_tools", [])
@@ -97,7 +102,9 @@ class Workflow:
 
         companies = []
         for tool_name in tool_names:
-            tool_search_results = self.firecrawl.search_companies(tool_name + " official site", num_results=1)
+            tool_search_results = self.firecrawl.search_companies(
+                tool_name + " official site", num_results=1
+            )
 
             if tool_search_results:
                 result = tool_search_results.data[0]
@@ -108,7 +115,7 @@ class Workflow:
                     description=result.get("markdown", ""),
                     website=url,
                     tech_stack=[],
-                    competitors=[]
+                    competitors=[],
                 )
 
                 scraped = self.firecrawl.scrape_company_pages(url)
@@ -131,13 +138,13 @@ class Workflow:
     def _analyze_step(self, state: ResearchState) -> Dict[str, Any]:
         print("Generating recommendations")
 
-        company_data = ", ".join([
-            company.json() for company in state.companies
-        ])
+        company_data = ", ".join([company.json() for company in state.companies])
 
         messages = [
             SystemMessage(content=self.prompts.RECOMMENDATIONS_SYSTEM),
-            HumanMessage(content=self.prompts.recommendations_user(state.query, company_data))
+            HumanMessage(
+                content=self.prompts.recommendations_user(state.query, company_data)
+            ),
         ]
 
         response = self.llm.invoke(messages)
